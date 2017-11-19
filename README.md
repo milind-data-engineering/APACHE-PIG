@@ -12,14 +12,21 @@ Attribute Information:
 a) u.data
 
 userID  - Id of user who rated movie
+
 movieID - Movie ID of the movie which the user rated
+
 rating -  Ratings provided by user for the movie (1-5)
+
 ratingTime - Time when rating is provided 
+
 
 b) u.item
 
 movieID - Movie ID of the movie
+
 movieTitle - Title of the movie corresponding to the movie id
+
 releasedate - Release Date of the movie
+
 IMDB link - IMDB link of the movie
  
