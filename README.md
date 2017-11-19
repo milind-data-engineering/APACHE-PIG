@@ -1,10 +1,13 @@
 # Apache PIG Scripts
 
-Problem:
 The MovieLens dataset consists of 100,000 ratings (1-5) from 943 users on 1682 movies. 
 
+Problem:
+
 In MovieLens dataset (grouplens.org), find the below:
+
 a) 5-Star movies rated as per releasedate
+
 b) Movies that have a bad rating (average below 2.0) sorted as per the decreasing number of ratings
 
 Attribute Information:
