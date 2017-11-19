@@ -1,0 +1,51 @@
+Solution :
+
+a) 5-Star movies rated as per releasedate (oldest)
+
+ratings = LOAD '/user/milind_dev/ml-100k/u.data' AS (userID:int, movieID:int, rating:int, ratingTime:int);
+
+metadata = LOAD '/user/milind_dev/ml-100k/u.item' USING PigStorage('|')
+ 		AS (movieID:int, movieTitle:chararray, releaseDate:chararray, videoRelease:chararray, imdbLink:chararray);
+        
+nameLookup = FOREACH metadata Generate movieID,movieTitle,ToUnixTime(ToDate(releaseDate,'dd-MMM-yyyy')) As releaseTime;
+
+ratingsBymovie = Group ratings By movieID;
+
+avgRatings = FOREACH ratingsBymovie GENERATE group as movieID, AVG(ratings.rating) AS AvgRating;
+
+fiveStarMovies = Filter avgRatings by AvgRating > 4.0 ;
+
+fiveStarsWithData = JOIN fiveStarMovies BY movieID, nameLookup BY movieID;
+
+oldestfiveStarMovies = ORDER fiveStarsWithData BY nameLookup::releaseTime;
+
+DUMP oldestfiveStarMovies;
+
+
+b) Movies that have a bad rating (average below 2.0) sorted as per the decreasing number of ratings
+
+ratings = LOAD '/user/milind_dev/ml-100k/u.data' AS (userID:int, movieID:int, rating:int, ratingTime:int);
+
+metadata = LOAD '/user/milind_dev/ml-100k/u.item' USING PigStorage('|')
+ 		AS (movieID:int, movieTitle:chararray, releaseDate:chararray, videoRelease:chararray, imdbLink:chararray);
+        
+nameLookup = FOREACH metadata Generate movieID,movieTitle;
+DESCRIBE nameLookup;
+
+ratingsBymovie = Group ratings By movieID;
+DESCRIBE ratingsBymovie;
+
+avgRatings = FOREACH ratingsBymovie GENERATE group as movieID, AVG(ratings.rating) AS AvgRating, COUNT(ratings.rating) AS CntRating;
+DESCRIBE avgRatings;
+
+BadStarMovies = Filter avgRatings by AvgRating < 2.0 ;
+DESCRIBE BadStarMovies;
+
+BadStarMoviesWithData = JOIN BadStarMovies BY movieID, nameLookup BY movieID;
+DESCRIBE BadStarMoviesWithData;
+
+badmovies = ORDER BadStarMoviesWithData BY CntRating DESC;
+DESCRIBE badmovies;
+
+DUMP badmovies;
+
